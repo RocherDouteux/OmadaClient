@@ -227,3 +227,40 @@ class OmadaClient:
     def get_group_profile_id(self, site_id, profile_name):
         profile = self.get_group_profile(site_id=site_id, profile_name=profile_name)
         return profile.get('groupId', None)
+
+    def modify_group_iplist(self, site_id, group_type, group_id, new_ip_list):
+        if not self.access_token:
+            raise RuntimeError("Access token is not set. Obtain it first.")
+
+        url = urljoin(
+            self.base_url,
+            f"/openapi/v1/{self.omadac_id}/sites/{site_id}/profiles/groups/{group_type}/{group_id}"
+        )
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"AccessToken={self.access_token}"
+        }
+
+        payload = {
+          "name": "Mogstation",
+          "type": 0,
+          "count": 1,
+          "ipList": new_ip_list
+        }
+
+        response = requests.patch(url, headers=headers, json=payload, verify=self.verify_ssl)
+        if response.status_code != 200:
+            logger.error(f"Modify group IP list failed with status code {response.status_code}")
+            logger.debug(f"response.text: {response.text}")
+            response.raise_for_status()
+
+        data = response.json()
+        if data.get("errorCode") != 0:
+            logger.error(f"Modify group IP list error: {data.get('msg')}")
+            raise RuntimeError(f"Failed to modify group IP list: {data.get('msg')}")
+
+        logger.info(f"Modified IP list for group '{group_id}' in site '{site_id}' successfully")
+
+        return data
+
+

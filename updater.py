@@ -3,6 +3,7 @@ import os
 
 from dotenv import load_dotenv
 from client import OmadaClient
+from helpers import resolve_fqdns_to_ipv4
 
 logging.basicConfig(
     level=logging.INFO,
@@ -10,6 +11,7 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger(__name__)
+
 
 def main():
     load_dotenv()
@@ -43,11 +45,20 @@ def main():
     if home_site_id is None:
         logger.warning("No home site found")
     else:
-        # mog_group_profil = client.get_group_profile(site_id=home_site_id, profile_name='Mogstation')
-        # print(mog_group_profil)
-
         mog_group_profil_id = client.get_group_profile_id(site_id=home_site_id, profile_name='Mogstation')
-        print(mog_group_profil_id)
+
+        new_ip_list = resolve_fqdns_to_ipv4(["secure.square-enix.com"])
+
+        formatted_ip_list = [
+            {"ip": ip, "mask": 32, "description": fqdn}
+            for fqdn, ips in new_ip_list.items()
+            for ip in ips
+        ]
+
+        client.modify_group_iplist(
+            site_id=home_site_id, group_type=0,
+            group_id=mog_group_profil_id, new_ip_list=formatted_ip_list
+        )
 
 
 if __name__ == '__main__':

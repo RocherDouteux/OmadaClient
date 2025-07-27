@@ -1,7 +1,9 @@
 # ✨ OmadaClient — Python API Client for TP-Link Omada Controller ✨
 
 Welcome to **OmadaClient**, your Python-powered key to seamless interaction with the TP-Link Omada Controller OpenAPI (v5.15+) !
+
 This is a simple client that helps me interact with my **ER605** at home. I don't plan to extend this project too much tho.
+
 ---
 
 ## 🚀 Features
@@ -9,7 +11,7 @@ This is a simple client that helps me interact with my **ER605** at home. I don'
 - 🔐 **Secure token-based authentication** with CSRF/session handling  
 - 🎯 Retrieve **authorization & access tokens** effortlessly  
 - 🏢 Fetch and manage **sites** with paging support  
-- 👥 List and locate **group profiles** by name  
+- 👥 List, edit and locate **group profiles** by name
 - 🐍 Clean, reusable, and **debug-friendly** Python design  
 
 ---
